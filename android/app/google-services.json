@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "208158672092",
+    "project_id": "rn-laravel-foodfeed",
+    "storage_bucket": "rn-laravel-foodfeed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:208158672092:android:47716417ab07f906a92019",
+        "android_client_info": {
+          "package_name": "com.foodfeed"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "208158672092-8mjsl1adsuoikdvfe9m0dq11s9chalqa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANdiSSki1zv-bJYH6N3uVVhk0RN_0AACY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "208158672092-8mjsl1adsuoikdvfe9m0dq11s9chalqa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
