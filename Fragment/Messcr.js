@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useEffect } from 'react';
-import { FlatList, Image, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { Button, FlatList, Image, PermissionsAndroid, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View, _Text } from 'react-native';
 import { AudioRecorder, AudioUtils } from 'react-native-audio';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Sound from 'react-native-sound';
@@ -9,9 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import Chatinput from '../components/Bottom/Chatinput';
 import { echo } from '../libs/api/api';
 import { upfile } from '../libs/api/fileAPI';
-import { sendmessage } from '../libs/api/messAPI';
+import { loadMore, sendmessage } from '../libs/api/messAPI';
 import { readmess } from '../libs/api/roomAPI';
-import { seenMess, updateMes } from '../reduxif/chatSlice';
+import { seenMess, updateMes, moreMess } from '../reduxif/chatSlice';
 
 import {
     RTCPeerConnection,
@@ -23,6 +23,7 @@ import {
     mediaDevices,
     registerGlobals
   } from 'react-native-webrtc';
+import { useState } from 'react';
 const configuration = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
 const pc = new RTCPeerConnection(configuration);
 Sound.setCategory('Playback');
@@ -109,6 +110,13 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         overflow: 'hidden'
     },
+    moremess:{
+        display: 'flex',
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        
+    }
 });
 
 // Assuming Pusher
@@ -123,6 +131,8 @@ const radioRecoderConfig = {
 
 const Messcr = ({navigation,route}) => {
     const { room  } = route.params;
+    const [offset,setOffset] = useState(15);
+    const [loading,setLoad] = useState(false);
     const mess = useSelector(({chat})=>chat.room.find((item)=>item.id == room).message);
     const roomIndex = useSelector(({chat})=>chat.room.findIndex(item=>item.id == room));
     // const { room,roomIndex,roomIdd} = route.params;
@@ -316,17 +326,37 @@ const Messcr = ({navigation,route}) => {
             sendMessWithFile(result.assets[0]);
         }
     }
+    const loadmore = async () => {
+        if (offset > 15) {
+        setLoad(true);
+            
+        }
+        try {
+           const newMess = await loadMore(room,offset,15);
+           console.log(newMess);
+           dispatch(moreMess({ri:roomIndex,messArr:newMess}))
+           setOffset(offset+15);
+        } catch (error) {
+            alert('loi');
+        } finally{
+            setLoad(false);
+        }
+    }
     return (
         <TouchableWithoutFeedback
         // onPress= {()=>setOpen(false)}
         >
         <View style={styles.container}>
-
+            {loading && <View style={styles.moremess}>
+            <Text style={{fontWeight: 'bold'}}>loading more</Text>
+        </View>}
+        
                 <FlatList
                     style = {styles.chatarea}
                     data={mess}
                     renderItem={renderItem}
                     keyExtractor={(item,index) => index}
+                    onEndReached={()=>loadmore()}
                 />
             
             <Chatinput openCam={()=>{openCam()}} openPickup={()=>openLibs()} stopRecoding = {()=>stopRecoding() } micPress = {()=>recoddingRadio()} userId={user.id} room={room} sendmess={sendmess}/>

@@ -13,3 +13,7 @@ export const allmess = async (id) => {
     const res = await API.get('/message/'+id);
     return res.data;
 }
+export const loadMore = async (roomId,offset,limit) => {
+    const res =  await API.get(`/message/paging/${roomId}?offset=${offset}&limit=${limit}`);
+    return res.data;
+}

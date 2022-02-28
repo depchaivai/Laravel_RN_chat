@@ -17,6 +17,10 @@ const chatSlice = createSlice({
       status: 'idle'
     },
     reducers: {
+      moreMess: (state,{ payload }) => {
+        let newArr = state.room[payload.ri].message.concat(payload.messArr);
+        state.room[payload.ri].message = newArr;
+      },
       updateMes: (state,{ payload }) => {
         state.room[payload.index].message.unshift(payload.ms);
       },
@@ -39,7 +43,7 @@ const chatSlice = createSlice({
     }
   })
 
-  export const { updateMes,seenMess } = chatSlice.actions;
+  export const { updateMes,seenMess,moreMess } = chatSlice.actions;
   const selectRoom = state=>state.chat.room
   export const roommess = createSelector([selectRoom],(room,{roomid}) => {
     const mess = room.map(it=>roomid);
